@@ -5,6 +5,8 @@ use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston::window::WindowSettings;
 
 mod consts;
+mod move_checks;
+mod piece_kind;
 
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend.
@@ -25,14 +27,13 @@ impl App {
 
         let square_size = args.window_size[0] as f64 / 8.0;
         let square = rectangle::square(0.0, 0.0, square_size);
-        // Render board
+
+        // Render board background
         for x_idx in 0..8 {
             for y_idx in 0..8 {
                 let (x, y) = (square_size * x_idx as f64, square_size * y_idx as f64);
                 let mul: bool = ((x_idx + y_idx) % 2) != 1;
-                println!("mul: {}", mul);
-                let color = [mul as u8 as f32 * 1.0, mul as u8 as f32 * 0.8, 0.0, 1.0];
-                println!("Color: {:?}", color);
+                let color = [0.2 + mul as u8 as f32 * 0.8, 0.2 + mul as u8 as f32 * 0.6, 0.2, 1.0];
 
                 self.gl.draw(args.viewport(), |c, gl| {
                     let transform = c
@@ -42,6 +43,9 @@ impl App {
                 });
             }
         }
+
+        // Render pieces
+
     }
 
     fn update(&mut self, args: &UpdateArgs) {
