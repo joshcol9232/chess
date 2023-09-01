@@ -12,88 +12,96 @@ pub trait Piece {
                      is_occupied: bool) -> bool;
 }
 
+
+// Option<Rc<dyn Piece>>
+#[macro_export]
+macro_rules! new_piece {
+    ($piece_name:expr, $team:expr) => {
+        Rc::new( $piece_name($team) )
+    };
+    // Empty
+    () => {
+        Rc::new( Empty )
+    }
+}
+
 /// PIECE DEFINITIONS
-pub struct Pawn { team: bool }
+pub struct Pawn(pub bool);
 
 impl Piece for Pawn {
-    fn kind(&self) -> PieceKind {
-        return PieceKind::Pawn;
-    }
-    fn team(&self) -> bool { return self.team }
+    fn kind(&self) -> PieceKind { PieceKind::Pawn }
+    fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
                      dxy: [i8; 2],
                      is_occupied: bool) -> bool {
-        pawn(dxy, is_occupied, self.team)
+        pawn(dxy, is_occupied, self.team())
     }
 }
 
-pub struct Rook { team: bool }
+pub struct Rook(pub bool);
 
 impl Piece for Rook {
-    fn kind(&self) -> PieceKind {
-        return PieceKind::Rook;
-    }
-    fn team(&self) -> bool { return self.team }
+    fn kind(&self) -> PieceKind { PieceKind::Rook }
+    fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
                      dxy: [i8; 2],
                      is_occupied: bool) -> bool {
-        rook(dxy, is_occupied, self.team)
+        rook(dxy, is_occupied, self.team())
     }
 }
 
-pub struct Horse { team: bool }
+pub struct Horse(pub bool);
 
 impl Piece for Horse {
-    fn kind(&self) -> PieceKind {
-        return PieceKind::Horse;
-    }
-    fn team(&self) -> bool { return self.team }
+    fn kind(&self) -> PieceKind { PieceKind::Horse }
+    fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
                      dxy: [i8; 2],
                      is_occupied: bool) -> bool {
-        horse(dxy, is_occupied, self.team)
+        horse(dxy, is_occupied, self.team())
     }
 }
 
-pub struct Bishop { team: bool }
+pub struct Bishop(pub bool);
 
 impl Piece for Bishop {
-    fn kind(&self) -> PieceKind {
-        return PieceKind::Bishop;
-    }
-    fn team(&self) -> bool { return self.team }
+    fn kind(&self) -> PieceKind { PieceKind::Bishop }
+    fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
                      dxy: [i8; 2],
                      is_occupied: bool) -> bool {
-        bishop(dxy, is_occupied, self.team)
+        bishop(dxy, is_occupied, self.team())
     }
 }
 
-pub struct Queen { team: bool }
+pub struct Queen(pub bool);
 
 impl Piece for Queen {
-    fn kind(&self) -> PieceKind {
-        return PieceKind::Queen;
-    }
-    fn team(&self) -> bool { return self.team }
+    fn kind(&self) -> PieceKind { PieceKind::Queen }
+    fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
                      dxy: [i8; 2],
                      is_occupied: bool) -> bool {
-        queen(dxy, is_occupied, self.team)
+        queen(dxy, is_occupied, self.team())
     }
 }
 
-pub struct King { team: bool }
+pub struct King(pub bool);
 
 impl Piece for King {
-    fn kind(&self) -> PieceKind {
-        return PieceKind::King;
-    }
-    fn team(&self) -> bool { return self.team }
+    fn kind(&self) -> PieceKind { PieceKind::King }
+    fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
                      dxy: [i8; 2],
                      is_occupied: bool) -> bool {
-        king(dxy, is_occupied, self.team)
+        king(dxy, is_occupied, self.team())
     }
+}
+
+pub struct Empty;
+impl Piece for Empty {
+    fn kind(&self) -> PieceKind { PieceKind::Empty }
+    fn team(&self) -> bool { false }
+    fn is_valid_move(&self, dxy: [i8; 2], is_occupied: bool) -> bool { false }
 }
 

@@ -5,7 +5,8 @@ pub enum PieceKind {
     Horse,
     Bishop,
     Queen,
-    King
+    King,
+    Empty
 }
 
 #[derive(PartialEq, Eq, Hash)]

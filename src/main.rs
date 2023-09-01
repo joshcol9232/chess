@@ -3,7 +3,9 @@ mod move_checks;
 mod piece_kind;
 mod piece;
 
+mod start_board;
 mod board_view;
+mod board_model;
 
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{GlGraphics, OpenGL};
