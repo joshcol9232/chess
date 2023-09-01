@@ -3,17 +3,54 @@ use piston::input::{RenderArgs};
 use sprite::Sprite;
 
 use std::collections::HashMap;
+use std::rc::Rc;
 
-use crate::{consts, piece_kind::PieceKind};
+use crate::consts::{self, WHITE, BLACK};
+use crate::piece_kind::{PieceKind, PieceDescriptor};
 
-fn load_piece_sprite_map(txt: Texture) -> HashMap<PieceKind, Sprite<Texture>> {
+fn load_piece_sprite_map(txt: Texture) -> HashMap<PieceDescriptor, Sprite<Texture>> {
     let mut map = HashMap::new();
-    map.insert(PieceKind::Bishop, Sprite::from_texture_rect(txt.into(), [0.0, 0.0, 12.0, 15.0]));
+    // [x, y, width, height]
+    
+    let txt_rc = Rc::new(txt);
+
+    // In order of the image
+    // -- Bishop
+    map.insert(PieceDescriptor { kind: PieceKind::Bishop, team: WHITE },
+               Sprite::from_texture_rect(txt_rc.clone(), [1.0, 1.0, 12.0, 15.0]));
+    map.insert(PieceDescriptor { kind: PieceKind::Bishop, team: BLACK },
+               Sprite::from_texture_rect(txt_rc.clone(), [1.0, 20.0, 12.0, 15.0]));
+    // -- Horse
+    map.insert(PieceDescriptor { kind: PieceKind::Horse, team: WHITE },
+               Sprite::from_texture_rect(txt_rc.clone(), [12.0, 1.0, 12.0, 15.0]));
+    map.insert(PieceDescriptor { kind: PieceKind::Horse, team: BLACK },
+               Sprite::from_texture_rect(txt_rc.clone(), [12.0, 20.0, 12.0, 15.0]));
+    // -- Rook
+    map.insert(PieceDescriptor { kind: PieceKind::Rook, team: WHITE },
+               Sprite::from_texture_rect(txt_rc.clone(), [26.0, 1.0, 9.0, 15.0]));
+    map.insert(PieceDescriptor { kind: PieceKind::Rook, team: BLACK },
+               Sprite::from_texture_rect(txt_rc.clone(), [26.0, 20.0, 9.0, 15.0]));
+    // -- Pawn
+    map.insert(PieceDescriptor { kind: PieceKind::Pawn, team: WHITE },
+               Sprite::from_texture_rect(txt_rc.clone(), [37.0, 1.0, 9.0, 15.0]));
+    map.insert(PieceDescriptor { kind: PieceKind::Pawn, team: BLACK },
+               Sprite::from_texture_rect(txt_rc.clone(), [37.0, 20.0, 9.0, 15.0]));
+    // -- King
+    map.insert(PieceDescriptor { kind: PieceKind::King, team: WHITE },
+               Sprite::from_texture_rect(txt_rc.clone(), [48.0, 1.0, 13.0, 15.0]));
+    map.insert(PieceDescriptor { kind: PieceKind::King, team: BLACK },
+               Sprite::from_texture_rect(txt_rc.clone(), [48.0, 20.0, 13.0, 15.0]));
+    // -- Queen
+    map.insert(PieceDescriptor { kind: PieceKind::Queen, team: WHITE },
+               Sprite::from_texture_rect(txt_rc.clone(), [63.0, 1.0, 13.0, 15.0]));
+    map.insert(PieceDescriptor { kind: PieceKind::Queen, team: BLACK },
+               Sprite::from_texture_rect(txt_rc.clone(), [63.0, 20.0, 13.0, 15.0]));
+
     map
 }
 
 pub struct BoardView {
-    sprite_map: HashMap<PieceKind, Sprite<Texture>>,
+    sprite_map: HashMap<PieceDescriptor, Sprite<Texture>>,
 }
 
 impl BoardView {

@@ -9,8 +9,8 @@ pub enum PieceKind {
 }
 
 #[derive(PartialEq, Eq, Hash)]
-pub struct PieceDescriptor {
-    pub kind: PieceKind,
-    pub team: bool
+pub struct PieceInfo {
+    kind: PieceKind,
+    team: bool
 }
 

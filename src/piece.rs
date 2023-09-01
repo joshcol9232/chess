@@ -1,9 +1,10 @@
-use crate::piece_kind::PieceKind;
+use crate::piece_kind::{PieceKind, PieceDescriptor};
 use crate::move_checks::*;
 
 pub trait Piece {
     fn kind(&self) -> PieceKind;
     fn team(&self) -> bool;  // black -> 0, white -> 1
+    fn descriptor(&self) -> PieceDescriptor { PieceDescriptor { kind: self.kind(), team: self.team() } }
                                  //
     // let dxy: [i8; 2] = [to[0] as i8 - from[0] as i8, to[1] as i8 - from[1] as i8];
     fn is_valid_move(&self,
