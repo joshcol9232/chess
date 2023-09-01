@@ -15,10 +15,12 @@ use piston::window::WindowSettings;
 
 use piece_kind::PieceKind;
 use board_view::BoardView;
+use board_model::BoardModel;
 
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend
     board_view: BoardView,
+    board_model: BoardModel,
 }
 
 impl App {
@@ -27,11 +29,12 @@ impl App {
         Ok(Self {
             gl,
             board_view,
+            board_model: BoardModel::new(),
         })
     }
 
     fn render(&mut self, args: &RenderArgs) {
-        self.board_view.render(&mut self.gl, args);
+        self.board_view.render(&mut self.gl, args, &self.board_model);
     }
 
     fn update(&mut self, args: &UpdateArgs) {
@@ -44,6 +47,8 @@ fn main() {
 
     let mut window: Window = WindowSettings::new("Chess", consts::WINDOW_SIZE)
         .graphics_api(opengl)
+        .resizable(false)
+        .samples(0)
         .exit_on_esc(true)
         .build()
         .unwrap();
