@@ -39,8 +39,8 @@ impl BoardView {
         let square_size = args.window_size[0] as f64 / 8.0;
         let square = rectangle::square(0.0, 0.0, square_size);
 
-        const WHITE_SQUARE_COL: [f32; 4] = [1.0, 0.8, 0.2, 1.0];
-        const BLACK_SQUARE_COL: [f32; 4] = [0.2, 0.2, 0.2, 1.0];
+        const WHITE_SQUARE_COL: [f32; 4] = [1.0, 0.8, 0.5, 1.0];
+        const BLACK_SQUARE_COL: [f32; 4] = [0.4, 0.1, 0.1, 1.0];
 
         for x_idx in 0..8 {
             for y_idx in 0..8 {
@@ -50,9 +50,9 @@ impl BoardView {
 
                 let back_col = if let Some(state) = square_state {
                     match state {
-                        aux_model::SquareState::ValidMove   => [0.0, 1.0, 0.0, 1.0],
-                        aux_model::SquareState::InvalidMove => [1.0, 0.0, 0.0, 1.0],
-                        aux_model::SquareState::IsSelected  => [0.0, 0.0, 1.0, 1.0],
+                        aux_model::SquareState::ValidMove   => [0.0, 0.7, 0.0, 1.0],
+                        aux_model::SquareState::InvalidMove => [0.7, 0.0, 0.0, 1.0],
+                        aux_model::SquareState::IsSelected  => [0.0, 0.7, 0.7, 1.0],
                     }
                 } else if is_white_square {
                     WHITE_SQUARE_COL

@@ -66,7 +66,8 @@ impl App {
         match args {
             ButtonArgs { button: Button::Mouse(mouse_button), state: ButtonState::Press, .. } => {
                 self.board_controller.process_mouse_button(mouse_button,
-                                                           &mut self.board_model.borrow_mut());
+                                                           &mut self.board_model.borrow_mut(),
+                                                           &mut self.auxiliary_model.borrow_mut());
             }
             _ => ()
         }

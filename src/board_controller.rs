@@ -35,16 +35,13 @@ impl BoardController {
                                 } else {
                                     aux_model::SquareState::InvalidMove
                                 });
-        } else {
-            aux_model.clear_states();
         }
     }
 
     fn process_move_outcome(&mut self, outcome: MoveOutcome) {
-
     }
 
-    pub fn process_mouse_button(&mut self, button: &MouseButton, model: &mut BoardModel) {
+    pub fn process_mouse_button(&mut self, button: &MouseButton, model: &mut BoardModel, aux_model: &mut AuxModel) {
         match button {
             MouseButton::Left => {
                 if let Some(to_move) = self.selected_to_move {
@@ -58,6 +55,7 @@ impl BoardController {
                         self.selected_to_move = None;
                         self.process_move_outcome(outcome);
                     }
+                    aux_model.clear();
 
                     // Else, move is not valid, keep the selected to move.
                 } else {
@@ -65,6 +63,7 @@ impl BoardController {
                     if model.is_occupied(select_pos) {
                         println!("Selected: {:?}", select_pos);
                         self.selected_to_move = Some(select_pos);
+                        aux_model.set_state(select_pos, aux_model::SquareState::IsSelected);
                     }
                 }
             }
