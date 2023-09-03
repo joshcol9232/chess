@@ -88,7 +88,7 @@ impl Piece for Bishop {
                      from: [u8; 2],
                      to: [u8; 2],
                      is_occupied: bool) -> bool {
-        bishop(from, to, is_occupied, self.team())
+        bishop(board, from, to, is_occupied, self.team())
     }
 }
 

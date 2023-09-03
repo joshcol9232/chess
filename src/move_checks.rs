@@ -10,6 +10,7 @@ fn check_path_is_clear_straight(board: &BoardModel,
                                 dxy: [i8; 2]) -> bool {
     assert!(dxy[0] == 0 || dxy[1] == 0);
 
+    // TODO: Might be need optimising.
     println!("dxy: {:?}", dxy);
     if dxy[0] == 0 {
         for yy in 1..dxy[1].abs() {
@@ -29,6 +30,22 @@ fn check_path_is_clear_straight(board: &BoardModel,
         }
     }
 
+    true
+}
+
+// Requires that dxy is diagonal
+fn check_path_is_clear_diagonal(board: &BoardModel,
+                                from: [u8; 2], to: [u8; 2],
+                                dxy: [i8; 2]) -> bool {
+    assert!(dxy[0].abs() == dxy[1].abs());
+
+    for step in 1..dxy[0].abs() {
+        let spot = [ (from[0] as i8 + step * dxy[0].signum()) as u8, (from[1] as i8 + step * dxy[1].signum()) as u8 ];
+        println!("diag> Checking: {:?}", spot);
+        if board.is_occupied(spot) {
+            return false;
+        }
+    }
     true
 }
 
@@ -110,9 +127,13 @@ pub fn horse(from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
     false
 }
 
-pub fn bishop(from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
+pub fn bishop(board: &BoardModel, from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
     let dxy = dxy(from, to);
-    dxy[0] == dxy[1]
+    if dxy[0].abs() == dxy[1].abs() {
+        check_path_is_clear_diagonal(board, from, to, dxy)
+    } else {
+        false
+    }
 }
 
 pub fn queen(from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
