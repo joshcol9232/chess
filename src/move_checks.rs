@@ -1,4 +1,5 @@
 use crate::board_model::BoardModel;
+use crate::piece_kind::PieceKind;
 
 fn dxy(from: [u8; 2], to: [u8; 2]) -> [i8; 2] {
     [to[0] as i8 - from[0] as i8, to[1] as i8 - from[1] as i8]
@@ -129,20 +130,22 @@ pub fn horse(from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
 
 pub fn bishop(board: &BoardModel, from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
     let dxy = dxy(from, to);
-    if dxy[0].abs() == dxy[1].abs() {
-        check_path_is_clear_diagonal(board, from, to, dxy)
+    dxy[0].abs() == dxy[1].abs() && check_path_is_clear_diagonal(board, from, to, dxy)
+}
+
+pub fn queen(board: &BoardModel, from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
+    rook(board, from, to, occupied, team) || bishop(board, from, to, occupied, team)
+}
+
+pub fn king(board: &BoardModel, from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
+    let dxy = dxy(from, to);
+    // IF first move, and in the castle position with rook in the corner, then castle :)
+    if dxy[0].abs() == 2 && (from[1] == 0 || from[1] == 7) {  // Castle?
+        let rook_pos_needed = [to[0] + 1, to[1]];
+        println!("Rook pos needed: {:?}", rook_pos_needed);
+        board.kind_at(rook_pos_needed) == PieceKind::Rook
     } else {
-        false
+        (dxy[0].abs() <= 1 && dxy[1].abs() <= 1) && queen(board, from, to, occupied, team)
     }
-}
-
-pub fn queen(from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
-    let dxy = dxy(from, to);
-    false
-}
-
-pub fn king(from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {
-    let dxy = dxy(from, to);
-    false
 }
 

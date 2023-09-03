@@ -103,23 +103,28 @@ impl Piece for Queen {
                      from: [u8; 2],
                      to: [u8; 2],
                      is_occupied: bool) -> bool {
-        queen(from, to, is_occupied, self.team())
+        queen(board, from, to, is_occupied, self.team())
     }
 }
 
 #[derive(new)]
-pub struct King(pub bool);
+pub struct King  {
+    team: bool,
+    #[new(value = "true")]
+    first_move: bool,
+}
 
 impl Piece for King {
     fn kind(&self) -> PieceKind { PieceKind::King }
-    fn team(&self) -> bool { self.0 }
+    fn team(&self) -> bool { self.team }
     fn is_valid_move(&self,
                      board: &BoardModel,
                      from: [u8; 2],
                      to: [u8; 2],
                      is_occupied: bool) -> bool {
-        king(from, to, is_occupied, self.team())
+        king(board, from, to, is_occupied, self.team())
     }
+    fn register_first_move(&mut self) { self.first_move = false; }
 }
 
 #[derive(new)]

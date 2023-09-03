@@ -56,18 +56,31 @@ impl BoardModel {
         }
                
         // Otherwise, valid move so continue :)
+        let mut castling = false;
+
         println!("Moving: {:?} -> {:?}", from, to);
         let result = if self[to].borrow().kind() != PieceKind::Empty {
             Some(MoveOutcome::TookPiece(self[to].borrow().descriptor()))
+        } else if self.kind_at(from) == PieceKind::King && (to[0] as i8 - from[0] as i8).abs() == 2 {  // Special case for castling
+            castling = true;
+            Some(MoveOutcome::Castle)
         } else {
             Some(MoveOutcome::JustMove)
         };
 
         self[from].borrow_mut().register_first_move();  // If a pawn, then it needs to know if at least one move
                                                         // has happened.
+
         // Swap and make old square empty.
         self[to] = Rc::clone(&self[from]);
         self[from] = new_piece!();  // Set old space empty.
+        
+        if castling {
+            let rook_pos = [to[0] + 1, to[1]];
+            let new_rook_pos = [to[0] - 1, to[1]];
+            self[new_rook_pos] = Rc::clone(&self[rook_pos]);
+            self[rook_pos] = new_piece!();  // Empty rook spot
+        }
         
         result
     }
