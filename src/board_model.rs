@@ -28,6 +28,9 @@ impl BoardModel {
     pub fn kind_at(&self, xy: [u8; 2]) -> PieceKind {
         self[xy].borrow().kind()
     }
+    pub fn team_at(&self, xy: [u8; 2]) -> bool {
+        self[xy].borrow().team()
+    }
 
     pub fn is_occupied(&self, xy: [u8; 2]) -> bool {
         self.kind_at(xy) != PieceKind::Empty

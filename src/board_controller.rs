@@ -1,6 +1,6 @@
 use piston::input::{MouseButton};
 
-use crate::consts::WINDOW_SIZE_F64;
+use crate::consts::{WHITE, BLACK, WINDOW_SIZE_F64};
 use crate::board_model::{self, BoardModel};
 use crate::aux_model::{self, AuxModel};
 use crate::move_outcome::MoveOutcome;
@@ -8,6 +8,7 @@ use crate::move_outcome::MoveOutcome;
 pub struct BoardController {
     mouse_pos: [f64; 2],
     selected_to_move: Option<[u8; 2]>,
+    whos_turn: bool,
 }
 
 impl BoardController {
@@ -15,6 +16,7 @@ impl BoardController {
         Self {
             mouse_pos: [0.0, 0.0],
             selected_to_move: None,
+            whos_turn: WHITE,
         }
     }
 
@@ -53,6 +55,7 @@ impl BoardController {
                     } else if let Some(outcome) = model.move_piece(to_move, new_pos){
                         // Otherwise, actually move the piece
                         self.selected_to_move = None;
+                        self.whos_turn = !self.whos_turn;
                         self.process_move_outcome(outcome);
                     }
                     aux_model.clear();
@@ -60,7 +63,7 @@ impl BoardController {
                     // Else, move is not valid, keep the selected to move.
                 } else {
                     let select_pos = mouse_pos_to_board_pos(&self.mouse_pos);
-                    if model.is_occupied(select_pos) {
+                    if model.is_occupied(select_pos) && model.team_at(select_pos) == self.whos_turn {
                         println!("Selected: {:?}", select_pos);
                         self.selected_to_move = Some(select_pos);
                         aux_model.set_state(select_pos, aux_model::SquareState::IsSelected);
@@ -69,6 +72,7 @@ impl BoardController {
             }
             MouseButton::Right => {
                 self.selected_to_move = None;
+                aux_model.clear();
             }
             _ => ()
         }
