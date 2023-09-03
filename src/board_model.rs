@@ -35,7 +35,6 @@ impl BoardModel {
 
     pub fn is_valid_move(&self, from: [u8; 2], to: [u8; 2]) -> bool {
         // Get diff
-        let dxy: [i8; 2] = [to[0] as i8 - from[0] as i8, to[1] as i8 - from[1] as i8];
         let is_occupied = self.is_occupied(to);
 
          // First of all, if the `to` space is occupied, check it is of the other team.
@@ -43,7 +42,7 @@ impl BoardModel {
             return false;
         }
         // Then check the piece movement is correct
-        if !self[from].borrow().is_valid_move(dxy, is_occupied) {
+        if !self[from].borrow().is_valid_move(&self, from, to, is_occupied) {
             return false;
         }
 

@@ -1,5 +1,6 @@
 use crate::piece_kind::{PieceKind, PieceDescriptor};
 use crate::move_checks::*;
+use crate::board_model::BoardModel;
 
 pub trait Piece {
     fn kind(&self) -> PieceKind;
@@ -8,7 +9,9 @@ pub trait Piece {
 
     fn register_first_move(&mut self) {}
     fn is_valid_move(&self,
-                     dxy: [i8; 2],
+                     board: &BoardModel,
+                     from: [u8; 2],
+                     to: [u8; 2],
                      is_occupied: bool) -> bool;
 }
 
@@ -35,9 +38,11 @@ impl Piece for Pawn {
     fn kind(&self) -> PieceKind { PieceKind::Pawn }
     fn team(&self) -> bool { self.team }
     fn is_valid_move(&self,
-                     dxy: [i8; 2],
+                     board: &BoardModel,
+                     from: [u8; 2],
+                     to: [u8; 2],
                      is_occupied: bool) -> bool {
-        pawn(dxy, is_occupied, self.team(), self.first_move)
+        pawn(board, from, to, is_occupied, self.team(), self.first_move)
     }
     fn register_first_move(&mut self) { self.first_move = false; }
 }
@@ -49,9 +54,11 @@ impl Piece for Rook {
     fn kind(&self) -> PieceKind { PieceKind::Rook }
     fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
-                     dxy: [i8; 2],
+                     board: &BoardModel,
+                     from: [u8; 2],
+                     to: [u8; 2],
                      is_occupied: bool) -> bool {
-        rook(dxy, is_occupied, self.team())
+        rook(board, from, to, is_occupied, self.team())
     }
 }
 
@@ -62,9 +69,11 @@ impl Piece for Horse {
     fn kind(&self) -> PieceKind { PieceKind::Horse }
     fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
-                     dxy: [i8; 2],
+                     board: &BoardModel,
+                     from: [u8; 2],
+                     to: [u8; 2],
                      is_occupied: bool) -> bool {
-        horse(dxy, is_occupied, self.team())
+        horse(from, to, is_occupied, self.team())
     }
 }
 
@@ -75,9 +84,11 @@ impl Piece for Bishop {
     fn kind(&self) -> PieceKind { PieceKind::Bishop }
     fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
-                     dxy: [i8; 2],
+                     board: &BoardModel,
+                     from: [u8; 2],
+                     to: [u8; 2],
                      is_occupied: bool) -> bool {
-        bishop(dxy, is_occupied, self.team())
+        bishop(from, to, is_occupied, self.team())
     }
 }
 
@@ -88,9 +99,11 @@ impl Piece for Queen {
     fn kind(&self) -> PieceKind { PieceKind::Queen }
     fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
-                     dxy: [i8; 2],
+                     board: &BoardModel,
+                     from: [u8; 2],
+                     to: [u8; 2],
                      is_occupied: bool) -> bool {
-        queen(dxy, is_occupied, self.team())
+        queen(from, to, is_occupied, self.team())
     }
 }
 
@@ -101,9 +114,11 @@ impl Piece for King {
     fn kind(&self) -> PieceKind { PieceKind::King }
     fn team(&self) -> bool { self.0 }
     fn is_valid_move(&self,
-                     dxy: [i8; 2],
+                     board: &BoardModel,
+                     from: [u8; 2],
+                     to: [u8; 2],
                      is_occupied: bool) -> bool {
-        king(dxy, is_occupied, self.team())
+        king(from, to, is_occupied, self.team())
     }
 }
 
@@ -112,6 +127,10 @@ pub struct Empty;
 impl Piece for Empty {
     fn kind(&self) -> PieceKind { PieceKind::Empty }
     fn team(&self) -> bool { false }
-    fn is_valid_move(&self, dxy: [i8; 2], is_occupied: bool) -> bool { false }
+    fn is_valid_move(&self,
+                     board: &BoardModel,
+                     from: [u8; 2],
+                     to: [u8; 2],
+                     is_occupied: bool) -> bool { false }
 }
 
