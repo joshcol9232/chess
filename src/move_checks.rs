@@ -57,15 +57,8 @@ pub fn pawn(board: &BoardModel, from: [u8; 2], to: [u8; 2], occupied: bool, team
     
     // TRY THIS: ( ( occupied && (dxy[0] == 1 || dxy[0] == -1) ) || (dxy[0] == 0) ) && (dxy[1] == good_y_direction)
     //
-    let base_movement = (if occupied { dxy[0] == 1 || dxy[0] == -1 } else { dxy[0] == 0 }) &&
-        ( dxy[1] == good_y_direction || (is_first_move && dxy[1] == good_y_direction * 2) );
-
-    // Check there's nothing in the way
-    if base_movement {
-        check_path_is_clear_straight(board, from, to, dxy)
-    } else {
-        false
-    }
+    (if occupied { dxy[0] == 1 || dxy[0] == -1 } else { dxy[0] == 0 }) &&
+        ( (is_first_move && dxy[1] == good_y_direction * 2 && check_path_is_clear_straight(board, from, to, dxy)) ^ (dxy[1] == good_y_direction) )
 }
 
 pub fn rook(board: &BoardModel, from: [u8; 2], to: [u8; 2], occupied: bool, team: bool) -> bool {

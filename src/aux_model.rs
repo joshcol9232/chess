@@ -20,17 +20,12 @@ impl AuxModel {
     pub fn set_state(&mut self, xy: [u8; 2], state: SquareState) {
         self.states[xy] = Some(state);
 
-        /*
         if let Some(last_pos) = self.last_selected {
-            self.states[last_pos] = None;
-            self.last_selected = None;
+            if last_pos != xy {
+                self.states[last_pos] = None;
+            }
         }
-
-        // If it is a state that is due to mouse movement, there should only be 1.
-        if state == SquareState::ValidMove || state == SquareState::InvalidMove {
-            self.last_selected = Some(xy);
-        }
-        */
+        self.last_selected = Some(xy);
     }
 
     pub fn get_state(&self, xy: [u8; 2]) -> Option<SquareState> {
