@@ -1,4 +1,5 @@
 pub const WINDOW_SIZE: [u32; 2] = [800, 800];
+pub const WINDOW_SIZE_F64: [f64; 2] = [WINDOW_SIZE[0] as f64, WINDOW_SIZE[1] as f64];
 
 // Teams
 pub const BLACK: bool = false;

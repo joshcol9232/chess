@@ -8,6 +8,7 @@ use std::rc::Rc;
 use crate::consts::{self, WHITE, BLACK};
 use crate::piece_kind::{PieceKind, PieceDescriptor};
 use crate::board_model::BoardModel;
+use crate::aux_model::{self, AuxModel};
 
 
 pub struct BoardView {
@@ -27,7 +28,7 @@ impl BoardView {
         })
     }
 
-    pub fn render(&self, gl: &mut GlGraphics, args: &RenderArgs, model: &BoardModel) {
+    pub fn render(&self, gl: &mut GlGraphics, args: &RenderArgs, model: &BoardModel, aux_model: &AuxModel) {
         use graphics::*;
 
         gl.draw(args.viewport(), |c, gl| {
@@ -38,18 +39,33 @@ impl BoardView {
         let square_size = args.window_size[0] as f64 / 8.0;
         let square = rectangle::square(0.0, 0.0, square_size);
 
+        const WHITE_SQUARE_COL: [f32; 4] = [1.0, 0.8, 0.2, 1.0];
+        const BLACK_SQUARE_COL: [f32; 4] = [0.2, 0.2, 0.2, 1.0];
+
         for x_idx in 0..8 {
             for y_idx in 0..8 {
                 let (x, y) = (square_size * x_idx as f64, square_size * y_idx as f64);
-                let mul: bool = ((x_idx + y_idx) % 2) != 1;
-                let back_color = [0.2 + mul as u8 as f32 * 0.8, 0.2 + mul as u8 as f32 * 0.6, 0.2, 1.0];
+                let is_white_square = ((x_idx + y_idx) % 2) != 1;
+                let square_state = aux_model.get_state([x_idx, y_idx]);
+
+                let back_col = if let Some(state) = square_state {
+                    match state {
+                        aux_model::SquareState::ValidMove   => [0.0, 1.0, 0.0, 1.0],
+                        aux_model::SquareState::InvalidMove => [1.0, 0.0, 0.0, 1.0],
+                        aux_model::SquareState::IsSelected  => [0.0, 0.0, 1.0, 1.0],
+                    }
+                } else if is_white_square {
+                    WHITE_SQUARE_COL
+                } else {
+                    BLACK_SQUARE_COL
+                };
 
                 // Render background
                 gl.draw(args.viewport(), |c, gl| {
                     let transform = c
                         .transform
                         .trans(x, y);
-                    rectangle(back_color, square, transform, gl);
+                    rectangle(back_col, square, transform, gl);
                 });
 
                 // Render piece

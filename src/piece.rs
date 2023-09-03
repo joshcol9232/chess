@@ -5,39 +5,44 @@ pub trait Piece {
     fn kind(&self) -> PieceKind;
     fn team(&self) -> bool;  // black -> 0, white -> 1
     fn descriptor(&self) -> PieceDescriptor { PieceDescriptor { kind: self.kind(), team: self.team() } }
-                                 //
-    // let dxy: [i8; 2] = [to[0] as i8 - from[0] as i8, to[1] as i8 - from[1] as i8];
+
+    fn register_first_move(&mut self) {}
     fn is_valid_move(&self,
                      dxy: [i8; 2],
                      is_occupied: bool) -> bool;
 }
 
-
-// Option<Rc<dyn Piece>>
 #[macro_export]
 macro_rules! new_piece {
-    ($piece_name:expr, $team:expr) => {
-        Rc::new( $piece_name($team) )
+    ($piece_name:ty, $team:expr) => {
+        Rc::new(RefCell::new( <$piece_name>::new($team) ))
     };
     // Empty
     () => {
-        Rc::new( Empty )
+        Rc::new(RefCell::new( Empty ))
     }
 }
 
 /// PIECE DEFINITIONS
-pub struct Pawn(pub bool);
+#[derive(new)]
+pub struct Pawn {
+    team: bool,
+    #[new(value = "true")]
+    first_move: bool,
+}
 
 impl Piece for Pawn {
     fn kind(&self) -> PieceKind { PieceKind::Pawn }
-    fn team(&self) -> bool { self.0 }
+    fn team(&self) -> bool { self.team }
     fn is_valid_move(&self,
                      dxy: [i8; 2],
                      is_occupied: bool) -> bool {
-        pawn(dxy, is_occupied, self.team())
+        pawn(dxy, is_occupied, self.team(), self.first_move)
     }
+    fn register_first_move(&mut self) { self.first_move = false; }
 }
 
+#[derive(new)]
 pub struct Rook(pub bool);
 
 impl Piece for Rook {
@@ -50,6 +55,7 @@ impl Piece for Rook {
     }
 }
 
+#[derive(new)]
 pub struct Horse(pub bool);
 
 impl Piece for Horse {
@@ -62,6 +68,7 @@ impl Piece for Horse {
     }
 }
 
+#[derive(new)]
 pub struct Bishop(pub bool);
 
 impl Piece for Bishop {
@@ -74,6 +81,7 @@ impl Piece for Bishop {
     }
 }
 
+#[derive(new)]
 pub struct Queen(pub bool);
 
 impl Piece for Queen {
@@ -86,6 +94,7 @@ impl Piece for Queen {
     }
 }
 
+#[derive(new)]
 pub struct King(pub bool);
 
 impl Piece for King {
@@ -98,6 +107,7 @@ impl Piece for King {
     }
 }
 
+#[derive(new)]
 pub struct Empty;
 impl Piece for Empty {
     fn kind(&self) -> PieceKind { PieceKind::Empty }
